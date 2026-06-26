@@ -27,10 +27,7 @@ jobs:
         run: dotnet build src/NopCommerce.sln --configuration Release --no-restore
 
       - name: Publish Nop.Web
-        run: dotnet publish src/Presentation/Nop.Web/Nop.Web.csproj \
-          --configuration Release \
-          --output ./publish \
-          --no-build
+        run: dotnet publish src/Presentation/Nop.Web/Nop.Web.csproj --configuration Release --output ./publish --no-build
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
