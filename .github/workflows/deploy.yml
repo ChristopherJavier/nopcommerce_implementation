@@ -1,0 +1,33 @@
+name: deploy
+
+on:
+  workflow_run:
+    workflows:
+      - build
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: read
+
+jobs:
+  deploy:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          worflow: build.yml
+          run_id: ${{ github.event.workflow_run.id }}
+          name: nopcommerce-build
+          path: publish
+
+      - name: Verify files
+        run: ls -R publish
+
+      - name: Deploy
+        run: echo "Deploy Here"
