@@ -2,10 +2,8 @@ name: automerge
 
 on:
   workflow_run:
-    workflows:
-      - build
-    types:
-      - completed
+    workflows: ["build"]
+    types: [completed]
 
 permissions:
   pull-requests: write
@@ -17,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Enable auto merge
+      - name: Merge PR
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -25,29 +23,15 @@ jobs:
             const prs = context.payload.workflow_run.pull_requests;
       
             if (prs.length === 0) {
-              core.setFailed("No pull request found.");
+              core.setFailed("No PR found.");
               return;
             }
       
             const prNumber = prs[0].number;
       
-            const { data: pr } = await github.rest.pulls.get({
+            await github.rest.pulls.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: prNumber
-            });
-      
-            await github.graphql(`
-              mutation($id:ID!) {
-                enablePullRequestAutoMerge(
-                  input:{
-                    pullRequestId:$id
-                    mergeMethod:MERGE
-                  }
-                ) {
-                  clientMutationId
-                }
-              }
-            `, {
-              id: pr.node_id
+              pull_number: prNumber,
+              merge_method: "merge"
             });
