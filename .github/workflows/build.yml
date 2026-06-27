@@ -1,0 +1,47 @@
+name: build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    outputs:
+      artifact-name: nopcommerce-build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-
+
+      - name: Test
+        run: dotnet test src/NopCommerce.sln --configuration Release --no-build
+
+      - name: Publish Nop.Web
+        run: dotnet publish src/Presentation/Nop.Web/Nop.Web.csproj -c Release -o publish --no-build
+
+      - name: Upload publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nopcommerce-build
+          path: publish
+          retention-days: 1
