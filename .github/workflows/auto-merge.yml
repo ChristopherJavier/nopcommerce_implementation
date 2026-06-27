@@ -23,12 +23,20 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prs = context.payload.workflow_run.pull_requests;
-
-            if (prs.length === 0)
+      
+            if (prs.length === 0) {
+              core.setFailed("No pull request found.");
               return;
-
-            const pr = prs[0];
-
+            }
+      
+            const prNumber = prs[0].number;
+      
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+      
             await github.graphql(`
               mutation($id:ID!) {
                 enablePullRequestAutoMerge(
