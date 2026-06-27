@@ -37,7 +37,7 @@ jobs:
         run: dotnet restore src/NopCommerce.sln
 
       - name: Build
-        run: dotnet build src/NopCommerce.sln --configuration Release --no-build
+        run: dotnet build src/NopCommerce.sln --configuration Release
 
       - name: Test
         run: dotnet test src/NopCommerce.sln --configuration Release --no-build
