@@ -37,13 +37,13 @@ jobs:
         run: dotnet restore src/NopCommerce.sln
 
       - name: Build
-        run: dotnet build src/NopCommerce.sln --configuration Release
+        run: dotnet build src/NopCommerce.sln --configuration Release --no-restore
 
       - name: Test
         run: dotnet test src/NopCommerce.sln --configuration Release --no-build
 
       - name: Publish Nop.Web
-        run: dotnet publish src/Presentation/Nop.Web/Nop.Web.csproj -c Release -o publish --no-build
+        run: dotnet publish src/Presentation/Nop.Web/Nop.Web.csproj -c Release -o publish --no-restore
 
       - name: Upload publish artifact
         uses: actions/upload-artifact@v4
