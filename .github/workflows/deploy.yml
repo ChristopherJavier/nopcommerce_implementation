@@ -21,15 +21,18 @@ jobs:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v9
         with:
-          worflow: build.yml
+          workflow: build.yml
           run_id: ${{ github.event.workflow_run.id }}
           name: nopcommerce-build
           path: publish
 
+      - name: List files
+        run: ls -R
+
       - name: Extract artifact
         shell: pwsh
         run: |
-          Expand-Archive artifact/nopcommerce-build.zip publish
+          Expand-Archive publish/nopcommerce.zip publish
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
