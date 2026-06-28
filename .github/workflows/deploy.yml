@@ -26,8 +26,14 @@ jobs:
           name: nopcommerce-build
           path: publish
 
-      - name: Verify files
-        run: ls -R publish
+      - name: Extract artifact
+        shell: pwsh
+        run: |
+          Expand-Archive artifact/nopcommerce.zip publish
 
-      - name: Deploy
-        run: echo "Deploy Here"
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: nopcommerce-implementation
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: publish
