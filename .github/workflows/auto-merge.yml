@@ -21,14 +21,28 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prs = context.payload.workflow_run.pull_requests;
-      
+
             if (prs.length === 0) {
               core.setFailed("No PR found.");
               return;
             }
-      
+
             const prNumber = prs[0].number;
-      
+
+            const { data: pr } =
+              await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber
+              });
+
+            if (pr.mergeable_state !== "clean") {
+              core.setFailed(
+                `PR is not mergeable: ${pr.mergeable_state}`
+              );
+              return;
+            }
+
             await github.rest.pulls.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
