@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
@@ -45,9 +49,16 @@ jobs:
       - name: Publish Nop.Web
         run: dotnet publish src/Presentation/Nop.Web/Nop.Web.csproj -c Release -o publish --no-restore
 
+      - name: Compress publish
+        shell: pwsh
+        run: |
+          Compress-Archive `
+          -Path publish\* `
+          -DestinationPath nopcommerce.zip
+
       - name: Upload publish artifact
         uses: actions/upload-artifact@v4
         with:
           name: nopcommerce-build
-          path: publish
+          path: nopcommerce.zip
           retention-days: 1
