@@ -35,8 +35,9 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.AZURE_FTP_SERVER }}
+          protocol: ftps
           username: ${{ secrets.AZURE_FTP_USERNAME }}
           password: ${{ secrets.AZURE_FTP_PASSWORD }}
           local-dir: publish/
           server-dir: /site/wwwroot/
-          dangerous-clean-slate: true
+          security: strict
