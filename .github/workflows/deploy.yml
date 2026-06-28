@@ -29,7 +29,7 @@ jobs:
       - name: Extract artifact
         shell: pwsh
         run: |
-          Expand-Archive artifact/nopcommerce.zip publish
+          Expand-Archive artifact/nopcommerce-build.zip publish
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
