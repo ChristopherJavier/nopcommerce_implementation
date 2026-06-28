@@ -36,8 +36,8 @@ jobs:
         with:
           server: ${{ secrets.AZURE_FTP_SERVER }}
           protocol: ftps
+          security: loose
           username: ${{ secrets.AZURE_FTP_USERNAME }}
           password: ${{ secrets.AZURE_FTP_PASSWORD }}
           local-dir: publish/
           server-dir: /site/wwwroot/
-          security: strict
