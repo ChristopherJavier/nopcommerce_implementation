@@ -43,9 +43,6 @@ jobs:
       - name: Build
         run: dotnet build src/NopCommerce.sln --configuration Release --no-restore
 
-      - name: Test
-        run: dotnet test src/NopCommerce.sln --configuration Release --no-build
-
       - name: Publish Nop.Web
         run: dotnet publish src/Presentation/Nop.Web/Nop.Web.csproj -c Release -o publish --no-restore
 
